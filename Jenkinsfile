@@ -1,10 +1,23 @@
 pipeline {
+    agent any
+    stages {
+
+        stage('npm-build') {
     agent {
         docker {
-            image 'node:9.5.0'
+            image 'node:7.4'
         }
     }
-    stages {
+
+    steps {
+        echo "Branch is ${env.BRANCH_NAME}..."
+
+        withNPM(npmrcConfig:'my-custom-npmrc') {
+            echo "Performing npm build..."
+            sh 'npm install'
+        }
+    }
+}
         stage('Build') {
             steps {
                 sh 'npm install'
